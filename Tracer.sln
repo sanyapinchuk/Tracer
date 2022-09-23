@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tracer", "Tracer\Tracer.csproj", "{3327422E-E200-4FFC-B42C-D2EEC9BC1319}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tracer", "Tracer\Tracer.csproj", "{3327422E-E200-4FFC-B42C-D2EEC9BC1319}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serializer", "Serializer\Serializer.csproj", "{FCA72EDA-FBEA-4998-BC7E-AC4B43F5D617}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{D77850DB-3AAE-4D02-A6B7-EE30639C74C2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{3327422E-E200-4FFC-B42C-D2EEC9BC1319}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3327422E-E200-4FFC-B42C-D2EEC9BC1319}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3327422E-E200-4FFC-B42C-D2EEC9BC1319}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FCA72EDA-FBEA-4998-BC7E-AC4B43F5D617}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FCA72EDA-FBEA-4998-BC7E-AC4B43F5D617}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FCA72EDA-FBEA-4998-BC7E-AC4B43F5D617}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FCA72EDA-FBEA-4998-BC7E-AC4B43F5D617}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D77850DB-3AAE-4D02-A6B7-EE30639C74C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D77850DB-3AAE-4D02-A6B7-EE30639C74C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D77850DB-3AAE-4D02-A6B7-EE30639C74C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D77850DB-3AAE-4D02-A6B7-EE30639C74C2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

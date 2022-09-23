@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Tracer
 {
+    [Serializable]
     public class Node<T> where T : class
     {
         public T Data { get; set; }
@@ -14,7 +15,8 @@ namespace Tracer
             Data = data;
             Children = new List<Node<T>>();
         }
-        public Node<T>? Parent { get; set; }
+
+        internal Node<T>? Parent { get; set; }
         public List<Node<T>> Children { get; set; }
     }
 }

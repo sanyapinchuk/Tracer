@@ -11,13 +11,7 @@ namespace Tracer
     public class Tracer : ITracer
     {
         private static Stopwatch _stopwatch = new Stopwatch();
-        private TraceResult _traceResult;
-        private bool thereIsChildren;
-        private int currentTreeIndex = -1;
-        TraceResult currentTrace;
-        
-        private Node<TraceResult> _root;
-
+        private object _locker = new object();
 
 
         private ConcurrentDictionary<int, ThreadInfo> _threadsDictionary;
@@ -25,68 +19,69 @@ namespace Tracer
 
         static Tracer()
         {
-            stopwatch.Start();
+            _stopwatch.Start();
         }
 
         public Tracer()
         {
-            _traceResult = new TraceResult();
             _threads = new List<ThreadInfo>();
             _threadsDictionary = new ConcurrentDictionary<int, ThreadInfo>();
-            thereIsChildren = true;
         }
 
-        public Node<TraceResult> GetTraceResult()
+        public List<ThreadInfo> GetTraceResult()
         {
-            return _root;
+            return _threads;
         }
 
         public void StartTrace()
         {
-            /*if(!thereIsChildren)
-            {
-                 _currentNode = _currentNode.Parent;
-            }*/
             ThreadInfo currentThread;
             {
                 var currentThreadId = Thread.CurrentThread.ManagedThreadId;
-                if(_threadsDictionary.ContainsKey(currentThreadId))
+                lock (_locker)
                 {
-                    currentThread = _threadsDictionary[currentThreadId];
+                    if(_threadsDictionary.ContainsKey(currentThreadId))
+                    {
+                        currentThread = _threadsDictionary[currentThreadId];
+                    }
+                    else
+                    {
+                        currentThread = new ThreadInfo();
+                        currentThread.Id = currentThreadId;
+                        _threadsDictionary.TryAdd(currentThreadId, currentThread);
+                        _threads.Add(currentThread);
+                        currentThread.OldTime = _stopwatch.ElapsedMilliseconds;
+                        currentThread.Time = 0;
+                    }
                 }
-                else
-                {
-                    currentThread = new ThreadInfo();
-                    currentThread.Id = currentThreadId;
-                    _threadsDictionary.TryAdd(currentThreadId, currentThread);
-                    currentThread.Time = stopwatch.ElapsedMilliseconds;
-                }
+                
 
                
                 StackTrace stackTrace = new StackTrace();
-                var frame = stackTrace.GetFrame(0);
+                var frame = stackTrace.GetFrame(1);
                 var method = frame.GetMethod();
                 
                 
                 if(currentThread.CurrentNode == null)
                 {
-                    currentThread.CurrentNode = new Node<TraceResult>(new TraceResult() { ClassName = method.DeclaringType.Name,
-                    MethodName = method.Name});
+                    currentThread.CurrentNode = new Node<MethodInfo>(new MethodInfo() { 
+                        ClassName = method.DeclaringType.Name,
+                        MethodName = method.Name
+                    });
                     currentThread.CurrentNode.Parent = null;
                     //_root = _currentNode;
                     currentThread.ThreadMethods.Add(currentThread.CurrentNode);
-                    thereIsChildren = true;
-                    currentThread.CurrentNode.Data.Time = stopwatch.ElapsedMilliseconds;
+                    currentThread.CurrentNode.Data.Time = _stopwatch.ElapsedMilliseconds;
                     //_stopwatch.Start();
                 }
                 else
                 {
                    // 
-                    var temp = new Node<TraceResult>(new TraceResult()
+                    var temp = new Node<MethodInfo>(new MethodInfo()
                     {
                         ClassName = method.DeclaringType.Name,
                         MethodName = method.Name,
-                        Time = stopwatch.ElapsedMilliseconds
+                        Time = _stopwatch.ElapsedMilliseconds
                     });
                     currentThread.CurrentNode.Children.Add(temp);
                     temp.Parent = currentThread.CurrentNode;
@@ -107,9 +102,12 @@ namespace Tracer
             else
                 throw new Exception("StopTrace was calling before StartTrace");
 
-            currentThread.CurrentNode.Data.Time = stopwatch.ElapsedMilliseconds - currentThread.CurrentNode.Data.Time;
+            var tempTime = _stopwatch.ElapsedMilliseconds;
+            currentThread.CurrentNode.Data.Time = tempTime - currentThread.CurrentNode.Data.Time;
             currentThread.CurrentNode = currentThread.CurrentNode.Parent;
-            currentThread.Time = stopwatch.ElapsedMilliseconds - currentThread.Time;
+
+            currentThread.Time = tempTime - currentThread.OldTime + currentThread.Time;
+            currentThread.OldTime = tempTime;
         }
     }
 }
