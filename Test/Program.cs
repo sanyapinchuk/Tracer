@@ -7,9 +7,16 @@ using Serializer.Json;
 using Serializer.Xml;
 
 var tracer = new Tracer.Tracer();
-var temp = new Foo(tracer);
 
-temp.MyMethod();
+
+for(int i = 0; i < 3; i++)
+{
+    var temp = new Foo(tracer);
+    var thread = new Thread(temp.MyMethod);
+    thread.Start();
+}
+var temp2 = new Foo(tracer);
+temp2.MyMethod();
 
 var arrayThreads = tracer.GetTraceResult();
 
@@ -54,12 +61,9 @@ public class Foo
         }
         _bar.InnerMethod();
 
-        using (var sw = new FileStream("../../tempFile.txt", FileMode.Create))
+        for(int i = 0; i < 100; i++)
         {
-            for (byte i = 0; i < 200; i++)
-            {
-                sw.WriteByte(i);
-            }
+            var temp = Math.Exp(i);
         }
         
         _tracer.StopTrace();
