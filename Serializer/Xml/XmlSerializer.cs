@@ -4,12 +4,12 @@ using Serializer.Dto;
 using Serializer.Dto.Extentions;
 using System.Xml.Serialization;
 using System.Xml.Linq;
-
-namespace Serializer
+using Serializer.Interfaces;
+namespace Serializer.Xml
 {
-    public static class XmlSerializer
+    public class XmlSerializer:ITraceResultSerializer<List<ThreadInfo>>
     {
-        public static string Serialize(List<ThreadInfo> threads)
+        public string Serialize(List<ThreadInfo> threads)
         {
             System.Xml.Serialization.XmlSerializer xmlSerializer =
                 new System.Xml.Serialization.XmlSerializer(typeof(List<ThreadInfoDto>));

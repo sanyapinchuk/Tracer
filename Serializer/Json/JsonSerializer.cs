@@ -2,16 +2,16 @@
 using Tracer;
 using Serializer.Dto;
 using Serializer.Dto.Extentions;
-
-namespace Serializer
+using Serializer.Interfaces;
+namespace Serializer.Json
 {
-    public static class JsonSerializer
+    public class JsonSerializer: ITraceResultSerializer<List<ThreadInfo>>
     {
-        public static string Serialize(List<ThreadInfo> threads)
+        public string Serialize(List<ThreadInfo> threads)
         {
-            return System.Text.Json.JsonSerializer.Serialize(threads.ToDto(), 
-                typeof(List<ThreadInfoDto>),
-                new JsonSerializerOptions { WriteIndented = true });
+            return System.Text.Json.JsonSerializer.Serialize(threads.ToDto(),
+               typeof(List<ThreadInfoDto>),
+               new JsonSerializerOptions { WriteIndented = true });
         }
     }
 }

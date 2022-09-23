@@ -1,5 +1,10 @@
 ﻿using Tracer;
 using Serializer;
+using Test.Interfaces;
+using Test.SerializationResultWrites;
+using Serializer.Interfaces;
+using Serializer.Json;
+using Serializer.Xml;
 
 var tracer = new Tracer.Tracer();
 var temp = new Foo(tracer);
@@ -7,9 +12,27 @@ var temp = new Foo(tracer);
 temp.MyMethod();
 
 var arrayThreads = tracer.GetTraceResult();
-var str = Serializer.XmlSerializer.Serialize(arrayThreads);
 
-Console.WriteLine(str);
+
+//write results 
+
+ITraceResultSerializer<List<ThreadInfo>> serializer = new Serializer.Json.JsonSerializer();
+var json = serializer.Serialize(arrayThreads);
+
+serializer = new Serializer.Xml.XmlSerializer();
+var xml = serializer.Serialize(arrayThreads);
+
+
+ISerializationResultWriter writer = new SerializationResultConsoleWriter();
+writer.Write(json);
+writer.Write(xml);
+
+
+writer = new SerializationResultFileWriter("trace.xml");
+writer.Write(xml);
+((SerializationResultFileWriter)writer).Path = "trace.json";
+writer.Write(json);
+
 
 public class Foo
 {
